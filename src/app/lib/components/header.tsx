@@ -34,18 +34,19 @@ export const Header = () => {
 
 const HeaderContainer = styled.div`
     height: 60px;
-    background-color: ${({ theme }) => theme.colors.foreground};
-    padding: 0 15px;
     display: flex;
     flex-directon: row;
-    align-content: center;
+    align-items: center;
+    padding: 0 15px;
     justify-content: space-between;
+    background-color: ${({ theme }) => theme.colors.foreground};
 `
 
 const LogoContainer = styled.div`
     disply: flex;
     flex-direction: row;
     align-items: center;
+    padding: 0 10px;
 `
 
 const Logo = styled.img`
@@ -56,7 +57,9 @@ const Logo = styled.img`
 
 const Title = styled.h1`
     display: inline;
+    flex-direction: row;
     font-size: 20px;
+    padding: 0 5px;
     color: ${({ theme }) => theme.colors.typography};
 `
 
