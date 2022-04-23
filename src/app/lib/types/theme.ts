@@ -1,6 +1,6 @@
 export type AppTheme = {
     colors: {
-        primart: string,
+        primary: string,
         background: string,
         foreground: string,
         error: string,
