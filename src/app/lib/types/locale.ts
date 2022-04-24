@@ -9,6 +9,16 @@ export type Dictionary = {
         footer: {
             flatIcons: string,
             libreTranslate: string
+        },
+        message: {
+            tryAgain: string
+        }
+    },
+    screen: {
+        translator: {
+            loading: string,
+            error: string,
+            empty: string
         }
     }
 }
