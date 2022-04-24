@@ -1,74 +1,67 @@
-import { Confidence, ExchangeLanguage, Loader, Message, SelectLanguage, TextCounter, TextInput } from 'app/lib/components'
-import { useTranslations } from 'app/lib/hooks'
-import { Language } from 'app/lib/models'
-import React, { useEffect, useState } from 'react'
+import { Confidence, ExchangeLanguage, Loader, SelectLanguage, TextCounter, TextInput } from 'app/lib/components'
+import { Language, LanguageCode } from 'app/lib/models'
+import React, { useState } from 'react'
 import styled from "styled-components"
-import { useSupportedLanguages } from './useSupportedLanguages'
+import { SelectedLanguages } from './types'
 
-export const TranslatorScreen: React.FunctionComponent = () => {
-    const T = useTranslations()
-    const [languages, setLanguages] = useState<Array<Language>>([])
-    const {isLoading, hasError, fetch: getSupportedLanguages} = useSupportedLanguages(setLanguages)
-    
-    useEffect(() => {
-        getSupportedLanguages()
-    }, [])
+type TranslatorScreenProps = {
+    languages: Array<Language>
+}
 
-    if(isLoading) {
-        return (
-            <FetchLoaderContainer>
-                <Loader>
-                    <LoaderText>
-                        {T.screen.translator.loading}
-                    </LoaderText>
-                </Loader>
-            </FetchLoaderContainer>
-        )
-    }
-
-    if(hasError) {
-        return (
-            <CenterContainer>
-            <Message
-                withButton
-                message={T.screen.translator.error}
-                onClick={() => getSupportedLanguages()}
-            />
-            </CenterContainer>
-        )
-    }
-    if(languages.length === 0) {
-        return (
-            <CenterContainer>
-            <Message message={T.screen.translator.empty} />
-            </CenterContainer>
-        )
-    }
+export const TranslatorScreen: React.FunctionComponent = ({
+    languages
+}) => {
+    const [selectedLanguages, setSelectedLanguages] = useState<SelectedLanguages>({
+        source: LanguageCode.Auto,
+        target: LanguageCode.English
+    })
 
     return (
-        <Container>
-            <TranslatorContainer>
-                <InputContainer>
-                    <SelectLanguage />
-                    <TextInput />
-                    <LoaderContainer>
-                        <Loader />
-                    </LoaderContainer>
-                    <InputFooter>
-                        <Confidence />
-                        <TextCounter />
-                    </InputFooter>
-                </InputContainer>
-                <ExchangeLanguage />
-                <InputContainer>
-                    <SelectLanguage />
-                    <TextInput />
-                    <LoaderContainer>
-                        <Loader />
-                    </LoaderContainer>
-                </InputContainer>
-            </TranslatorContainer>
-        </Container>
+    <Container>
+        <TranslatorContainer>                <InputContainer>
+                <SelectLanguage 
+                    languages={languages}
+                    exclude={[selectedLanguages.target]}
+                    selectedLanguage={selectedLanguages.source}
+                    onChange={newCode => setSelectedLanguages(prevState => ({
+                        ...prevState,
+                        source: newCode
+                    }))}
+                />
+                <TextInput />
+                <LoaderContainer>
+                    <Loader />
+                </LoaderContainer>
+                <InputFooter>
+                    <Confidence />
+                    <TextCounter />
+                </InputFooter>
+            </InputContainer>
+            <ExchangeLanguage
+                hidden={selectedLanguages.source === LanguageCode.Auto}
+                onClick={() => setSelectedLanguages(prevState => ({
+                    source: prevState.target,
+                    target: prevState.source
+                }))}
+            />
+            <InputContainer>
+                <SelectLanguage 
+                    languages={languages}
+                    exclude={[selectedLanguages.source, LanguageCode.Auto]}
+                    onChange={newCode => setSelectedLanguages(prevState => ({
+                        ...prevState,
+                        target: newCode
+                    }))}
+                    selectedLanguage={selectedLanguages.target}
+                />
+                <TextInput />
+                <LoaderContainer>
+                    <Loader />
+                </LoaderContainer>
+            </InputContainer>
+        </TranslatorContainer>
+    </Container>
+    
     )
 }
 
@@ -95,24 +88,9 @@ const LoaderContainer = styled.div`
     padding: 5px 10px;
 `
 
-const FetchLoaderContainer = styled.div`
-    width: 50%;
-    align-self: center;
-    display: flex;
-`
-
-const LoaderText = styled.div`
-    color: ${({ theme }) => theme.colors.typography}
-    margin-top: 10px;   
-`
-
 const InputFooter = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 `
 
-const CenterContainer = styled.div`
-    display: flex;
-    justify-content: center;
-`
