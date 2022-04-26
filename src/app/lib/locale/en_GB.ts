@@ -2,10 +2,16 @@ import { Dictionary } from "../types"
 
 export const en_GB: Dictionary = {
     common: {
-        autoTranslate: 'Auto translate'
+        autoTranslate: 'Auto translate',
+        companyName: 'CodeMaskAcademy',
     },
-    companyName: 'CodeMaskAcademy',
+    
     components: {
+        app: {
+            loading: 'Fetching supported languages...',
+            error: 'Something went wrong',
+            empty: 'No supported language'
+        },
         header: {
             github: 'Github',
             discord: 'Discord',
@@ -19,11 +25,9 @@ export const en_GB: Dictionary = {
             tryAgain: 'Try again'
         }
     },
-    screen: {
+    screens: {
         translator: {
-            loading: 'Fetching supported languages...',
-            error: 'Something went wrong',
-            empty: 'No supported language'
+            sourceInputPlaceholder: 'Type text here...'
         }
     }
 }
