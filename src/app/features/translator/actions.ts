@@ -45,3 +45,45 @@ export const useSupportedLanguages = (
         }
     }
 }
+
+export const useAutoDetectLanguage = (
+    onSuccess: (useAutoDetectedLanguage: Array<Language>) => void
+) => {
+    const T = useTranslations()
+    const [isLoading, setLoading] = useState<boolean>(false)
+    const [hasError, setHasError] = useState<boolean>(false)
+
+    return {
+        isLoading,
+        hasError,
+        fetch: (query: string) => {
+            setLoading(true)
+            setHasError(false)
+
+            fetch(`${APP_CONFIG.API_URL}/detect`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    q: query
+                }),
+                headers: {
+                    'Content-Type': 'application/x-www-from-urlencoded'
+                }
+            })
+                .then(response => {
+                    if(response.ok) {
+                        return response
+                    }
+
+                    throw response
+                })
+                .then(response => response.json())
+                .then(([useAutoDetectLanguage]) => onSuccess(useAutoDetectLanguage))
+                .catch(() => {
+                    setHasError(true)
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
+        }
+    }
+}
