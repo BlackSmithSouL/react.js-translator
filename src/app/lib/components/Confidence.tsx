@@ -27,10 +27,10 @@ export const Confidence: React.FunctionComponent<ConfidenceProps> = ({
 
     const [detectedLanguage] = Object
         .entries(LanguageCode)
-        .find(([, languageCode]) => language === languageCode) || []
+        .find(([, languageCode]) => language == languageCode) || []
 
         return detectedLanguage
-            ? '(${detectedLanguage})'
+            ? '('+detectedLanguage+')'
             : undefined
 
     }, [language])
@@ -38,7 +38,7 @@ export const Confidence: React.FunctionComponent<ConfidenceProps> = ({
     return(
         <Container>
             <Percentage>
-                {confidence && '${confidence}%'}
+                {confidence + '%'}
             </Percentage>
             <Language
                 onClick={() => {
@@ -46,7 +46,7 @@ export const Confidence: React.FunctionComponent<ConfidenceProps> = ({
                         onClick()
                     }
                 }}
-                disabled
+                disabled={hasError}
             >
                 {hasError && T.components.confidence.error
                 }
